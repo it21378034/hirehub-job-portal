@@ -1,0 +1,118 @@
+@model IEnumerable<JobApplication>
+
+@{
+    ViewData["Title"] = "Job Applications";
+}
+
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h1 class="h2 mb-2">Job Applications</h1>
+                        <p class="text-muted mb-0">Review and manage applications for your job postings</p>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <a href="@Url.Action("MyJobs", "Jobs")" class="btn btn-outline-primary px-3">
+                            <i class="fas fa-briefcase me-1"></i>My Jobs
+                        </a>
+                        <a href="@Url.Action("Create", "Jobs")" class="btn btn-primary px-3">
+                            <i class="fas fa-plus me-1"></i>Post New Job
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        @if (Model.Any())
+        {
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Applicant</th>
+                                    <th>Job Position</th>
+                                    <th>Applied Date</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var application in Model)
+                                {
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="avatar-sm bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3">
+                                                    @application.JobSeeker.FirstName[0]@application.JobSeeker.LastName[0]
+                                                </div>
+                                                <div>
+                                                    <h6 class="mb-0">@application.JobSeeker.FirstName @application.JobSeeker.LastName</h6>
+                                                    <small class="text-muted">@application.JobSeeker.Email</small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <h6 class="mb-0">@application.JobPosting.Title</h6>
+                                            <small class="text-muted">@application.JobPosting.Company</small>
+                                        </td>
+                                        <td>@application.AppliedDate.ToString("MMM dd, yyyy")</td>
+                                        <td>
+                                            @switch (application.Status)
+                                            {
+                                                case "Pending":
+                                                    <span class="badge bg-warning">@application.Status</span>
+                                                    break;
+                                                case "Shortlisted":
+                                                    <span class="badge bg-success">@application.Status</span>
+                                                    break;
+                                                case "Rejected":
+                                                    <span class="badge bg-danger">@application.Status</span>
+                                                    break;
+                                                case "Hired":
+                                                    <span class="badge bg-primary">@application.Status</span>
+                                                    break;
+                                                default:
+                                                    <span class="badge bg-secondary">@application.Status</span>
+                                                    break;
+                                            }
+                                        </td>
+                                        <td>
+                                            <a href="@Url.Action("ApplicationDetails", new { id = application.Id })" 
+                                               class="btn btn-sm btn-outline-primary">
+                                                <i class="fas fa-eye me-1"></i>View
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="text-center py-5">
+                <div class="card border-0 bg-light">
+                    <div class="card-body py-5">
+                        <i class="fas fa-inbox text-muted mb-4" style="font-size: 4rem;"></i>
+                        <h4 class="text-muted mb-3">No Applications Yet</h4>
+                        <p class="text-muted mb-4">Applications for your job postings will appear here once candidates start applying.</p>
+                        <div class="d-flex justify-content-center gap-3">
+                            <a href="@Url.Action("Create", "Jobs")" class="btn btn-primary btn-lg px-4">
+                                <i class="fas fa-plus me-2"></i>Post Your First Job
+                            </a>
+                            <a href="@Url.Action("MyJobs", "Jobs")" class="btn btn-outline-secondary btn-lg px-4">
+                                <i class="fas fa-briefcase me-2"></i>View My Jobs
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</section>

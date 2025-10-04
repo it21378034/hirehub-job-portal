@@ -1,0 +1,205 @@
+@model JobPosting
+
+@{
+    ViewData["Title"] = "Create Job Posting";
+}
+
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <div class="card shadow">
+                    <div class="card-body p-5">
+                        <div class="text-center mb-4">
+                            <h2 class="fw-bold">Post a New Job</h2>
+                            <p class="text-muted">Fill in the details to create your job posting</p>
+                        </div>
+                        
+                        <!-- Success Message -->
+                        @if (TempData["SuccessMessage"] != null)
+                        {
+                            <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-check-circle fa-2x me-3 text-success"></i>
+                                    <div class="flex-grow-1">
+                                        <h6 class="alert-heading mb-1">Job Posted Successfully!</h6>
+                                        <p class="mb-0">@TempData["SuccessMessage"]</p>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        }
+
+                        <!-- Error Message -->
+                        @if (TempData["ErrorMessage"] != null)
+                        {
+                            <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-exclamation-triangle fa-2x me-3 text-danger"></i>
+                                    <div class="flex-grow-1">
+                                        <h6 class="alert-heading mb-1">Job Creation Failed</h6>
+                                        <p class="mb-0">@TempData["ErrorMessage"]</p>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        }
+                        
+                        <form asp-action="Create" method="post">
+                            <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+                            
+                            <div class="mb-3">
+                                <label asp-for="Title" class="form-label fw-bold">Job Title</label>
+                                <input asp-for="Title" class="form-control" placeholder="Enter job title" />
+                                <span asp-validation-for="Title" class="text-danger"></span>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label asp-for="Company" class="form-label fw-bold">Company</label>
+                                        <input asp-for="Company" class="form-control" placeholder="Enter company name" />
+                                        <span asp-validation-for="Company" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label asp-for="Location" class="form-label fw-bold">Location</label>
+                                        <input asp-for="Location" class="form-control" placeholder="Enter job location" />
+                                        <span asp-validation-for="Location" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label asp-for="Description" class="form-label fw-bold">Job Description</label>
+                                <textarea asp-for="Description" class="form-control" rows="4" placeholder="Describe the job responsibilities and requirements"></textarea>
+                                <span asp-validation-for="Description" class="text-danger"></span>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label asp-for="JobType" class="form-label fw-bold">
+                                            <i class="fas fa-briefcase me-1"></i>Job Type *
+                                        </label>
+                                        <select asp-for="JobType" class="form-select enhanced-select" required data-placeholder="Select Job Type">
+                                            <option value="">Select Job Type</option>
+                                            <option value="Full-time" selected>Full-time</option>
+                                            <option value="Part-time">Part-time</option>
+                                            <option value="Contract">Contract</option>
+                                            <option value="Remote">Remote</option>
+                                            <option value="Internship">Internship</option>
+                                        </select>
+                                        <span asp-validation-for="JobType" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label asp-for="ExperienceLevel" class="form-label fw-bold">
+                                            <i class="fas fa-chart-bar me-1"></i>Experience Level *
+                                        </label>
+                                        <select asp-for="ExperienceLevel" class="form-select enhanced-select" required data-placeholder="Select Experience Level">
+                                            <option value="">Select Experience Level</option>
+                                            <option value="Entry">Entry Level (0-2 years)</option>
+                                            <option value="Mid" selected>Mid Level (3-5 years)</option>
+                                            <option value="Senior">Senior Level (6+ years)</option>
+                                            <option value="Executive">Executive (10+ years)</option>
+                                        </select>
+                                        <span asp-validation-for="ExperienceLevel" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label asp-for="ApplicationDeadline" class="form-label fw-bold">Application Deadline</label>
+                                        <input asp-for="ApplicationDeadline" class="form-control" type="date" min="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                                        <span asp-validation-for="ApplicationDeadline" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label asp-for="SalaryMin" class="form-label fw-bold">Minimum Salary</label>
+                                        <input asp-for="SalaryMin" class="form-control" type="number" step="0.01" placeholder="Enter minimum salary" />
+                                        <span asp-validation-for="SalaryMin" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label asp-for="SalaryMax" class="form-label fw-bold">Maximum Salary</label>
+                                        <input asp-for="SalaryMax" class="form-control" type="number" step="0.01" placeholder="Enter maximum salary" />
+                                        <span asp-validation-for="SalaryMax" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label asp-for="SalaryCurrency" class="form-label fw-bold">
+                                    <i class="fas fa-dollar-sign me-1"></i>Salary Currency
+                                </label>
+                                <select asp-for="SalaryCurrency" class="form-select enhanced-select" data-placeholder="Select Currency">
+                                    <option value="USD" selected>USD - US Dollar</option>
+                                    <option value="EUR">EUR - Euro</option>
+                                    <option value="GBP">GBP - British Pound</option>
+                                    <option value="CAD">CAD - Canadian Dollar</option>
+                                    <option value="AUD">AUD - Australian Dollar</option>
+                                    <option value="JPY">JPY - Japanese Yen</option>
+                                    <option value="INR">INR - Indian Rupee</option>
+                                    <option value="PKR">PKR - Pakistani Rupee</option>
+                                </select>
+                                <span asp-validation-for="SalaryCurrency" class="text-danger"></span>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label asp-for="Requirements" class="form-label fw-bold">Job Requirements</label>
+                                <textarea asp-for="Requirements" class="form-control" rows="3" placeholder="List the required skills and qualifications"></textarea>
+                                <span asp-validation-for="Requirements" class="text-danger"></span>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label asp-for="Benefits" class="form-label fw-bold">Benefits & Perks</label>
+                                <textarea asp-for="Benefits" class="form-control" rows="3" placeholder="List the benefits and perks offered"></textarea>
+                                <span asp-validation-for="Benefits" class="text-danger"></span>
+                            </div>
+                            
+                            <div class="d-flex justify-content-between">
+                                <a href="@Url.Action("MyJobs", "Jobs")" class="btn btn-outline-secondary">
+                                    <i class="fas fa-arrow-left me-2"></i>Back to My Jobs
+                                </a>
+                                <button type="submit" class="btn btn-primary btn-lg">
+                                    <i class="fas fa-plus me-2"></i>Create Job Posting
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.querySelector('form[asp-action="Create"]');
+            const submitBtn = document.querySelector('button[type="submit"]');
+            
+            if (form && submitBtn) {
+                form.addEventListener('submit', function(e) {
+                    // Show loading state
+                    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Creating Job...';
+                    submitBtn.disabled = true;
+                    
+                    // Add a small delay to show the loading state
+                    setTimeout(function() {
+                        // Form will submit normally
+                    }, 100);
+                });
+            }
+        });
+    </script>
+}

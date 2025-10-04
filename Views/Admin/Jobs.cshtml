@@ -1,0 +1,93 @@
+@model IEnumerable<JobPosting>
+
+@{
+    ViewData["Title"] = "Manage Jobs";
+}
+
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h1 class="display-5 mb-4">Manage Job Postings</h1>
+            </div>
+        </div>
+        
+        @if (Model.Any())
+        {
+            <div class="row">
+                @foreach (var job in Model)
+                {
+                    <div class="col-lg-6 mb-4">
+                        <div class="card job-card card-hover h-100">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <h5 class="card-title text-primary">@job.Title</h5>
+                                    <div>
+                                        @if (job.IsActive)
+                                        {
+                                            <span class="badge bg-success">Active</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary">Inactive</span>
+                                        }
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <p class="text-muted mb-1">
+                                        <i class="fas fa-building me-2"></i>@job.Company
+                                    </p>
+                                    <p class="text-muted mb-1">
+                                        <i class="fas fa-map-marker-alt me-2"></i>@job.Location
+                                    </p>
+                                    <p class="text-muted mb-1">
+                                        <i class="fas fa-user me-2"></i>Posted by @job.Employer.FirstName @job.Employer.LastName
+                                    </p>
+                                </div>
+                                
+                                <p class="card-text text-muted">
+                                    @(job.Description.Length > 100 ? job.Description.Substring(0, 100) + "..." : job.Description)
+                                </p>
+                                
+                                <div class="row mb-3">
+                                    <div class="col-6">
+                                        <small class="text-muted">
+                                            <i class="fas fa-clock me-1"></i>
+                                            Posted @job.PostedDate.ToString("MMM dd, yyyy")
+                                        </small>
+                                    </div>
+                                    <div class="col-6 text-end">
+                                        <small class="text-muted">
+                                            <i class="fas fa-users me-1"></i>
+                                            @job.Applications.Count applications
+                                        </small>
+                                    </div>
+                                </div>
+                                
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <a href="@Url.Action("Details", "Jobs", new { id = job.Id })" class="btn btn-outline-primary btn-sm">
+                                        View Details
+                                    </a>
+                                    <form asp-action="ToggleJobStatus" method="post" class="d-inline">
+                                        <input type="hidden" name="id" value="@job.Id" />
+                                        <button type="submit" class="btn btn-sm @(job.IsActive ? "btn-outline-warning" : "btn-outline-success")">
+                                            @(job.IsActive ? "Deactivate" : "Activate")
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="text-center py-5">
+                <i class="fas fa-briefcase text-muted" style="font-size: 4rem;"></i>
+                <h4 class="text-muted mt-3">No job postings found</h4>
+            </div>
+        }
+    </div>
+</section>

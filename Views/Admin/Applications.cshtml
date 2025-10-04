@@ -1,0 +1,131 @@
+@model IEnumerable<JobApplication>
+
+@{
+    ViewData["Title"] = "Manage Applications";
+}
+
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h1 class="display-5 mb-4">Job Applications</h1>
+            </div>
+        </div>
+        
+        @if (Model.Any())
+        {
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Applicant</th>
+                                    <th>Job Position</th>
+                                    <th>Company</th>
+                                    <th>Applied Date</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var application in Model)
+                                {
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="avatar-sm bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3">
+                                                    @application.JobSeeker.FirstName[0]@application.JobSeeker.LastName[0]
+                                                </div>
+                                                <div>
+                                                    <h6 class="mb-0">@application.JobSeeker.FirstName @application.JobSeeker.LastName</h6>
+                                                    <small class="text-muted">@application.JobSeeker.Email</small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <h6 class="mb-0">@application.JobPosting.Title</h6>
+                                            <small class="text-muted">@application.JobPosting.Location</small>
+                                        </td>
+                                        <td>@application.JobPosting.Company</td>
+                                        <td>@application.AppliedDate.ToString("MMM dd, yyyy")</td>
+                                        <td>
+                                            <span class="badge @(application.Status switch {
+                                                "Pending" => "bg-warning",
+                                                "Reviewed" => "bg-info", 
+                                                "Shortlisted" => "bg-success",
+                                                "Rejected" => "bg-danger",
+                                                "Hired" => "bg-primary",
+                                                _ => "bg-secondary"
+                                            })">@application.Status</span>
+                                        </td>
+                                        <td>
+                                            <div class="dropdown">
+                                                <button class="btn btn-sm btn-outline-primary dropdown-toggle" type="button" data-mdb-toggle="dropdown">
+                                                    Update Status
+                                                </button>
+                                                <ul class="dropdown-menu">
+                                                    <li>
+                                                        <form asp-action="UpdateApplicationStatus" method="post" class="d-inline">
+                                                            <input type="hidden" name="id" value="@application.Id" />
+                                                            <input type="hidden" name="status" value="Pending" />
+                                                            <button type="submit" class="dropdown-item">Pending</button>
+                                                        </form>
+                                                    </li>
+                                                    <li>
+                                                        <form asp-action="UpdateApplicationStatus" method="post" class="d-inline">
+                                                            <input type="hidden" name="id" value="@application.Id" />
+                                                            <input type="hidden" name="status" value="Reviewed" />
+                                                            <button type="submit" class="dropdown-item">Reviewed</button>
+                                                        </form>
+                                                    </li>
+                                                    <li>
+                                                        <form asp-action="UpdateApplicationStatus" method="post" class="d-inline">
+                                                            <input type="hidden" name="id" value="@application.Id" />
+                                                            <input type="hidden" name="status" value="Shortlisted" />
+                                                            <button type="submit" class="dropdown-item">Shortlisted</button>
+                                                        </form>
+                                                    </li>
+                                                    <li>
+                                                        <form asp-action="UpdateApplicationStatus" method="post" class="d-inline">
+                                                            <input type="hidden" name="id" value="@application.Id" />
+                                                            <input type="hidden" name="status" value="Rejected" />
+                                                            <button type="submit" class="dropdown-item">Rejected</button>
+                                                        </form>
+                                                    </li>
+                                                    <li>
+                                                        <form asp-action="UpdateApplicationStatus" method="post" class="d-inline">
+                                                            <input type="hidden" name="id" value="@application.Id" />
+                                                            <input type="hidden" name="status" value="Hired" />
+                                                            <button type="submit" class="dropdown-item">Hired</button>
+                                                        </form>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="text-center py-5">
+                <i class="fas fa-file-alt text-muted" style="font-size: 4rem;"></i>
+                <h4 class="text-muted mt-3">No applications found</h4>
+            </div>
+        }
+    </div>
+</section>
+
+<style>
+    .avatar-sm {
+        width: 40px;
+        height: 40px;
+        font-size: 14px;
+        font-weight: bold;
+    }
+</style>

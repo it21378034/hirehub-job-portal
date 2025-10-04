@@ -1,0 +1,273 @@
+@model JobPosting
+
+@{
+    ViewData["Title"] = "Edit Job Posting";
+}
+
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <div class="card shadow">
+                    <div class="card-body p-5">
+                        <div class="text-center mb-4">
+                            <h2 class="fw-bold">Edit Job Posting</h2>
+                            <p class="text-muted">Update the details of your job posting</p>
+                        </div>
+                        
+                        <!-- Success Message -->
+                        @if (TempData["SuccessMessage"] != null)
+                        {
+                            <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-check-circle fa-2x me-3 text-success"></i>
+                                    <div class="flex-grow-1">
+                                        <h6 class="alert-heading mb-1">🎉 Job Updated Successfully!</h6>
+                                        <p class="mb-0">@TempData["SuccessMessage"]</p>
+                                        <small class="text-muted">Your job posting has been updated and is now live for job seekers to view.</small>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        }
+
+                        
+                        <form asp-action="Edit" method="post" id="editForm">
+                            
+                            <input asp-for="Id" type="hidden" />
+                            <input asp-for="EmployerId" type="hidden" />
+                            <input asp-for="PostedDate" type="hidden" />
+                            <input asp-for="IsActive" type="hidden" />
+                            <input asp-for="Status" type="hidden" />
+                            <input asp-for="CategoryId" type="hidden" />
+                            
+                            
+                            <div class="mb-3">
+                                <label asp-for="Title" class="form-label fw-bold">Job Title</label>
+                                <input asp-for="Title" class="form-control" placeholder="Enter job title" />
+                                <span asp-validation-for="Title" class="text-danger"></span>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label asp-for="Company" class="form-label fw-bold">Company</label>
+                                        <input asp-for="Company" class="form-control" placeholder="Enter company name" />
+                                        <span asp-validation-for="Company" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label asp-for="Location" class="form-label fw-bold">Location</label>
+                                        <input asp-for="Location" class="form-control" placeholder="Enter job location" />
+                                        <span asp-validation-for="Location" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label asp-for="Description" class="form-label fw-bold">Job Description</label>
+                                <textarea asp-for="Description" class="form-control" rows="4" placeholder="Describe the job responsibilities and requirements"></textarea>
+                                <span asp-validation-for="Description" class="text-danger"></span>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label asp-for="JobType" class="form-label fw-bold">
+                                            <i class="fas fa-briefcase me-1"></i>Job Type *
+                                        </label>
+                                        <select asp-for="JobType" class="form-select enhanced-select" required data-placeholder="Select Job Type">
+                                            <option value="">Select Job Type</option>
+                                            <option value="Full-time">Full-time</option>
+                                            <option value="Part-time">Part-time</option>
+                                            <option value="Contract">Contract</option>
+                                            <option value="Remote">Remote</option>
+                                            <option value="Internship">Internship</option>
+                                        </select>
+                                        <span asp-validation-for="JobType" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label asp-for="ExperienceLevel" class="form-label fw-bold">
+                                            <i class="fas fa-chart-bar me-1"></i>Experience Level *
+                                        </label>
+                                        <select asp-for="ExperienceLevel" class="form-select enhanced-select" required data-placeholder="Select Experience Level">
+                                            <option value="">Select Experience Level</option>
+                                            <option value="Entry">Entry Level (0-2 years)</option>
+                                            <option value="Mid">Mid Level (3-5 years)</option>
+                                            <option value="Senior">Senior Level (6+ years)</option>
+                                            <option value="Executive">Executive (10+ years)</option>
+                                        </select>
+                                        <span asp-validation-for="ExperienceLevel" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label asp-for="ApplicationDeadline" class="form-label fw-bold">Application Deadline</label>
+                                        <input asp-for="ApplicationDeadline" class="form-control" type="date" min="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                                        <span asp-validation-for="ApplicationDeadline" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label asp-for="SalaryMin" class="form-label fw-bold">Minimum Salary</label>
+                                        <input asp-for="SalaryMin" class="form-control" type="number" step="0.01" placeholder="Enter minimum salary" />
+                                        <span asp-validation-for="SalaryMin" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label asp-for="SalaryMax" class="form-label fw-bold">Maximum Salary</label>
+                                        <input asp-for="SalaryMax" class="form-control" type="number" step="0.01" placeholder="Enter maximum salary" />
+                                        <span asp-validation-for="SalaryMax" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label asp-for="SalaryCurrency" class="form-label fw-bold">
+                                    <i class="fas fa-dollar-sign me-1"></i>Salary Currency
+                                </label>
+                                <select asp-for="SalaryCurrency" class="form-select enhanced-select" data-placeholder="Select Currency">
+                                    <option value="USD">USD - US Dollar</option>
+                                    <option value="EUR">EUR - Euro</option>
+                                    <option value="GBP">GBP - British Pound</option>
+                                    <option value="CAD">CAD - Canadian Dollar</option>
+                                    <option value="AUD">AUD - Australian Dollar</option>
+                                    <option value="JPY">JPY - Japanese Yen</option>
+                                    <option value="INR">INR - Indian Rupee</option>
+                                    <option value="PKR">PKR - Pakistani Rupee</option>
+                                </select>
+                                <span asp-validation-for="SalaryCurrency" class="text-danger"></span>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label asp-for="Requirements" class="form-label fw-bold">Job Requirements</label>
+                                <textarea asp-for="Requirements" class="form-control" rows="3" placeholder="List the required skills and qualifications"></textarea>
+                                <span asp-validation-for="Requirements" class="text-danger"></span>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label asp-for="Benefits" class="form-label fw-bold">Benefits & Perks</label>
+                                <textarea asp-for="Benefits" class="form-control" rows="3" placeholder="List the benefits and perks offered"></textarea>
+                                <span asp-validation-for="Benefits" class="text-danger"></span>
+                            </div>
+                            
+                            <div class="d-flex justify-content-between align-items-center gap-3">
+                                <a href="@Url.Action("MyJobs", "Jobs")" class="btn btn-outline-secondary btn-lg px-4">
+                                    <i class="fas fa-arrow-left me-2"></i>Back to My Jobs
+                                </a>
+                                <button type="button" class="btn btn-primary btn-lg px-4" id="updateJobBtn" onclick="handleUpdate()">
+                                    <i class="fas fa-save me-2"></i>Update Job Posting
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+    <script>
+        // Function to handle update
+        function handleUpdate() {
+            const jobTitle = document.querySelector('input[name="Title"]').value;
+            const company = document.querySelector('input[name="Company"]').value;
+            
+            const message = `🚀 Ready to update your job posting?\n\n📋 Job Title: ${jobTitle}\n🏢 Company: ${company}\n\n✅ This will save your changes and make them live for job seekers.\n\nClick OK to continue or Cancel to review your changes.`;
+            
+            if (confirm(message)) {
+                // Show loading state
+                const updateBtn = document.getElementById('updateJobBtn');
+                if (updateBtn) {
+                    updateBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Updating...';
+                    updateBtn.disabled = true;
+                    
+                    // Re-enable button after 10 seconds as a safety measure
+                    setTimeout(() => {
+                        if (updateBtn.disabled) {
+                            updateBtn.innerHTML = '<i class="fas fa-save me-2"></i>Update Job Posting';
+                            updateBtn.disabled = false;
+                        }
+                    }, 10000);
+                }
+                
+                // Show feedback message
+                showUpdateFeedback();
+                
+                // Submit the form
+                console.log('Submitting form...');
+                document.getElementById('editForm').submit();
+            }
+        }
+        
+        // Function to show update feedback
+        function showUpdateFeedback() {
+            // Add a temporary feedback message
+            const feedbackDiv = document.createElement('div');
+            feedbackDiv.className = 'alert alert-info alert-dismissible fade show position-fixed';
+            feedbackDiv.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 350px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);';
+            feedbackDiv.innerHTML = `
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-spinner fa-spin fa-2x me-3 text-info"></i>
+                    <div>
+                        <h6 class="mb-1">🔄 Updating Your Job Posting...</h6>
+                        <p class="mb-0 small">Saving your changes...</p>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(feedbackDiv);
+            
+            // Remove feedback after 2 seconds (reduced from 4)
+            setTimeout(() => {
+                if (feedbackDiv.parentNode) {
+                    feedbackDiv.parentNode.removeChild(feedbackDiv);
+                }
+            }, 2000);
+        }
+        
+        // Add form submission handling
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.querySelector('form[asp-action="Edit"]');
+            
+            if (form) {
+                form.addEventListener('submit', function(e) {
+                    // Debug: Log form data
+                    const formData = new FormData(form);
+                    console.log('=== FORM SUBMISSION DEBUG ===');
+                    console.log('Form action:', form.action);
+                    console.log('Form method:', form.method);
+                    console.log('Job ID:', formData.get('Id'));
+                    console.log('Title:', formData.get('Title'));
+                    console.log('Company:', formData.get('Company'));
+                    console.log('================================');
+                    
+                    // Show loading state on form submit
+                    const submitBtn = form.querySelector('button[type="submit"]');
+                    if (submitBtn) {
+                        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Updating...';
+                        submitBtn.disabled = true;
+                        
+                        // Re-enable button after 8 seconds as a safety measure
+                        setTimeout(() => {
+                            if (submitBtn.disabled) {
+                                submitBtn.innerHTML = '<i class="fas fa-save me-2"></i>Update Job Posting';
+                                submitBtn.disabled = false;
+                            }
+                        }, 8000);
+                    }
+                });
+            }
+        });
+    </script>
+}

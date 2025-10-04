@@ -1,0 +1,252 @@
+@model HireHub.Models.AdminReportsViewModel
+
+@{
+    ViewData["Title"] = "Reports & Analytics";
+}
+
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h1 class="display-5 mb-4">Reports & Analytics</h1>
+            </div>
+        </div>
+
+        <!-- Statistics Cards -->
+        <div class="row mb-5">
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="card bg-primary text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h4 class="card-title">@Model.TotalUsers</h4>
+                                <p class="card-text">Total Users</p>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="fas fa-users fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="card bg-success text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h4 class="card-title">@Model.TotalJobs</h4>
+                                <p class="card-text">Total Jobs</p>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="fas fa-briefcase fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="card bg-info text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h4 class="card-title">@Model.TotalApplications</h4>
+                                <p class="card-text">Total Applications</p>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="fas fa-file-alt fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="card bg-warning text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h4 class="card-title">@Model.PendingJobs</h4>
+                                <p class="card-text">Pending Jobs</p>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="fas fa-clock fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Recent Jobs -->
+            <div class="col-lg-6 mb-4">
+                <div class="card shadow">
+                    <div class="card-header">
+                        <h5 class="mb-0">Recent Job Postings</h5>
+                    </div>
+                    <div class="card-body">
+                        @if (Model.RecentJobs.Any())
+                        {
+                            @foreach (var job in Model.RecentJobs.Take(5))
+                            {
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <div>
+                                        <h6 class="mb-1">@job.Title</h6>
+                                        <p class="text-muted small mb-0">@job.Company</p>
+                                    </div>
+                                    <div class="text-end">
+                                        <span class="badge bg-@(job.Status == "Approved" ? "success" : job.Status == "Pending" ? "warning" : "danger")">
+                                            @job.Status
+                                        </span>
+                                        <p class="text-muted small mb-0">@job.PostedDate.ToString("MMM dd")</p>
+                                    </div>
+                                </div>
+                                <hr>
+                            }
+                        }
+                        else
+                        {
+                            <p class="text-muted">No recent job postings.</p>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Applications -->
+            <div class="col-lg-6 mb-4">
+                <div class="card shadow">
+                    <div class="card-header">
+                        <h5 class="mb-0">Recent Applications</h5>
+                    </div>
+                    <div class="card-body">
+                        @if (Model.RecentApplications.Any())
+                        {
+                            @foreach (var application in Model.RecentApplications.Take(5))
+                            {
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <div>
+                                        <h6 class="mb-1">@application.JobPosting.Title</h6>
+                                        <p class="text-muted small mb-0">@application.JobSeeker.FirstName @application.JobSeeker.LastName</p>
+                                    </div>
+                                    <div class="text-end">
+                                        <span class="badge bg-@(application.Status == "Approved" ? "success" : application.Status == "Pending" ? "warning" : "secondary")">
+                                            @application.Status
+                                        </span>
+                                        <p class="text-muted small mb-0">@application.AppliedDate.ToString("MMM dd")</p>
+                                    </div>
+                                </div>
+                                <hr>
+                            }
+                        }
+                        else
+                        {
+                            <p class="text-muted">No recent applications.</p>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Section -->
+        <div class="row">
+            <div class="col-lg-6 mb-4">
+                <div class="card shadow">
+                    <div class="card-header">
+                        <h5 class="mb-0">Job Postings by Month</h5>
+                    </div>
+                    <div class="card-body">
+                        @if (Model.JobPostingsByMonth.Any())
+                        {
+                            <canvas id="jobPostingsChart" width="400" height="200"></canvas>
+                        }
+                        else
+                        {
+                            <p class="text-muted">No data available for job postings chart.</p>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6 mb-4">
+                <div class="card shadow">
+                    <div class="card-header">
+                        <h5 class="mb-0">Applications by Month</h5>
+                    </div>
+                    <div class="card-body">
+                        @if (Model.ApplicationsByMonth.Any())
+                        {
+                            <canvas id="applicationsChart" width="400" height="200"></canvas>
+                        }
+                        else
+                        {
+                            <p class="text-muted">No data available for applications chart.</p>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Job Postings Chart
+    @if (Model.JobPostingsByMonth.Any())
+    {
+        <text>
+        const jobPostingsCtx = document.getElementById('jobPostingsChart').getContext('2d');
+        new Chart(jobPostingsCtx, {
+            type: 'line',
+            data: {
+                labels: [@Html.Raw(string.Join(",", Model.JobPostingsByMonth.Select(d => $"'{d.MonthName}'")))],
+                datasets: [{
+                    label: 'Job Postings',
+                    data: [@string.Join(",", Model.JobPostingsByMonth.Select(d => d.Count))],
+                    borderColor: 'rgb(75, 192, 192)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    tension: 0.1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+        </text>
+    }
+
+    // Applications Chart
+    @if (Model.ApplicationsByMonth.Any())
+    {
+        <text>
+        const applicationsCtx = document.getElementById('applicationsChart').getContext('2d');
+        new Chart(applicationsCtx, {
+            type: 'bar',
+            data: {
+                labels: [@Html.Raw(string.Join(",", Model.ApplicationsByMonth.Select(d => $"'{d.MonthName}'")))],
+                datasets: [{
+                    label: 'Applications',
+                    data: [@string.Join(",", Model.ApplicationsByMonth.Select(d => d.Count))],
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    borderColor: 'rgb(54, 162, 235)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+        </text>
+    }
+</script>

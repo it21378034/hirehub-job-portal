@@ -1,0 +1,112 @@
+@model JobPosting
+
+@{
+    ViewData["Title"] = "Job Details";
+}
+
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <div class="card shadow">
+                    <div class="card-body p-5">
+                        <div class="d-flex justify-content-between align-items-start mb-4">
+                            <div>
+                                <h1 class="display-6 text-primary mb-2">@Model.Title</h1>
+                                <h4 class="text-muted">@Model.Company</h4>
+                            </div>
+                            <span class="badge bg-success fs-6">@Model.JobType</span>
+                        </div>
+                        
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <p class="text-muted mb-1">
+                                    <i class="fas fa-map-marker-alt me-2"></i>@Model.Location
+                                </p>
+                                <p class="text-muted mb-1">
+                                    <i class="fas fa-briefcase me-2"></i>@Model.ExperienceLevel
+                                </p>
+                            </div>
+                            <div class="col-md-6">
+                                @if (Model.SalaryMin.HasValue && Model.SalaryMax.HasValue)
+                                {
+                                    <p class="text-success fw-bold">
+                                        <i class="fas fa-dollar-sign me-1"></i>
+                                        $@Model.SalaryMin.Value.ToString("N0") - $@Model.SalaryMax.Value.ToString("N0")
+                                    </p>
+                                }
+                                <p class="text-muted">
+                                    <i class="fas fa-clock me-1"></i>
+                                    Posted @Model.PostedDate.ToString("MMM dd, yyyy")
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <h5>Job Description</h5>
+                            <p class="text-muted">@Model.Description</p>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <h5>Requirements</h5>
+                            <p class="text-muted">@Model.Requirements</p>
+                        </div>
+                        
+                        @if (!string.IsNullOrEmpty(Model.Benefits))
+                        {
+                            <div class="mb-4">
+                                <h5>Benefits</h5>
+                                <p class="text-muted">@Model.Benefits</p>
+                            </div>
+                        }
+                        
+                        @if (Model.ApplicationDeadline.HasValue)
+                        {
+                            <div class="alert alert-info">
+                                <i class="fas fa-calendar me-2"></i>
+                                <strong>Application Deadline:</strong> @Model.ApplicationDeadline.Value.ToString("MMM dd, yyyy")
+                            </div>
+                        }
+                        
+                        <div class="d-flex justify-content-between align-items-center">
+                            <a href="@Url.Action("Index", "Jobs")" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left me-2"></i>Back to Jobs
+                            </a>
+                            
+                            @if (User.Identity?.IsAuthenticated == true)
+                            {
+                                @if (User.IsInRole("JobSeeker"))
+                                {
+                                    <a href="@Url.Action("Apply", "Jobs", new { id = Model.Id })" class="btn btn-primary btn-lg">
+                                        <i class="fas fa-paper-plane me-2"></i>Apply Now
+                                    </a>
+                                }
+                                else if (User.IsInRole("Employer") && User.Identity.Name == Model.Employer.Email)
+                                {
+                                    <div class="btn-group">
+                                        <a href="@Url.Action("Edit", "Jobs", new { id = Model.Id })" class="btn btn-outline-primary">
+                                            <i class="fas fa-edit me-2"></i>Edit Job
+                                        </a>
+                                        <form asp-action="Delete" method="post" class="d-inline">
+                                            <input type="hidden" name="id" value="@Model.Id" />
+                                            <button type="submit" class="btn btn-outline-danger" 
+                                                    onclick="return confirm('Are you sure you want to delete this job posting?')">
+                                                <i class="fas fa-trash me-2"></i>Delete
+                                            </button>
+                                        </form>
+                                    </div>
+                                }
+                            }
+                            else
+                            {
+                                <a href="@Url.Action("Login", "Account")" class="btn btn-primary btn-lg">
+                                    <i class="fas fa-sign-in-alt me-2"></i>Login to Apply
+                                </a>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

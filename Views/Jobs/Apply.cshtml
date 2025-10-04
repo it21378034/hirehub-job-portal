@@ -1,0 +1,319 @@
+@model JobApplication
+
+@{
+    ViewData["Title"] = "Apply for Job";
+    var job = ViewBag.Job as JobPosting;
+}
+
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <div class="card shadow">
+                    <div class="card-body p-5">
+                        <div class="text-center mb-4">
+                            <h2 class="fw-bold">Apply for Position</h2>
+                            <p class="text-muted">Submit your application for this job</p>
+                        </div>
+
+                        <!-- Error Message -->
+                        @if (TempData["ErrorMessage"] != null)
+                        {
+                            <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-exclamation-triangle fa-2x me-3 text-danger"></i>
+                                    <div class="flex-grow-1">
+                                        <h6 class="alert-heading mb-1">Application Not Submitted</h6>
+                                        <p class="mb-0">@TempData["ErrorMessage"]</p>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        }
+
+                        <!-- Already Applied Message -->
+                        @if (TempData["InfoMessage"] != null)
+                        {
+                            <div class="alert alert-warning alert-dismissible fade show mb-4" role="alert">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-check-circle fa-2x me-3 text-warning"></i>
+                                    <div class="flex-grow-1">
+                                        <h6 class="alert-heading mb-1">Already Applied</h6>
+                                        <p class="mb-0">@TempData["InfoMessage"]</p>
+                                        <a href="@Url.Action("MyApplications", "Jobs")" class="btn btn-sm btn-outline-warning mt-2">
+                                            <i class="fas fa-eye me-1"></i>View My Applications
+                                        </a>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        }
+
+                        <!-- Application Instructions -->
+                        <div class="alert alert-info mb-4">
+                            <div class="d-flex align-items-start">
+                                <i class="fas fa-info-circle fa-2x me-3 text-info"></i>
+                                <div>
+                                    <h6 class="alert-heading mb-2">Application Process</h6>
+                                    <ul class="mb-0 small">
+                                        <li>Fill out the form below with your cover letter (resume is optional)</li>
+                                        <li>Click "Submit Application" to send your application</li>
+                                        <li>You'll receive a confirmation email with job details</li>
+                                        <li>Track your application status in "My Applications"</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        @if (job != null)
+                        {
+                            <div class="card bg-light mb-4">
+                                <div class="card-body">
+                                    <h5 class="text-primary">@job.Title</h5>
+                                    <p class="text-muted mb-1">
+                                        <i class="fas fa-building me-2"></i>@job.Company
+                                    </p>
+                                    <p class="text-muted mb-1">
+                                        <i class="fas fa-map-marker-alt me-2"></i>@job.Location
+                                    </p>
+                                    <p class="text-muted">
+                                        <i class="fas fa-briefcase me-2"></i>@job.JobType - @job.ExperienceLevel
+                                    </p>
+                                </div>
+                            </div>
+                        }
+                        
+                        @if (TempData["InfoMessage"] == null)
+                        {
+                            <form asp-action="Apply" method="post" enctype="multipart/form-data" id="applicationForm">
+                                <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+                                
+                                <div class="mb-3">
+                                    <label asp-for="CoverLetter" class="form-label fw-bold">Cover Letter</label>
+                                    <textarea asp-for="CoverLetter" class="form-control" rows="6" placeholder="Write your cover letter here..." id="coverLetter"></textarea>
+                                    <span asp-validation-for="CoverLetter" class="text-danger"></span>
+                                    <div class="form-text">Tell the employer why you're interested in this position and what makes you a good fit.</div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Upload Resume (Optional)</label>
+                                    <input type="file" name="resumeFile" class="form-control" accept=".pdf,.doc,.docx" id="resumeFile" />
+                                    <div class="form-text">Upload your resume in PDF, DOC, or DOCX format (max 10MB). This field is optional.</div>
+                                </div>
+                                
+                                <div class="mb-4">
+                                    <label asp-for="Notes" class="form-label fw-bold">Additional Notes (Optional)</label>
+                                    <textarea asp-for="Notes" class="form-control" rows="3" placeholder="Any additional notes or comments..." id="notes"></textarea>
+                                    <span asp-validation-for="Notes" class="text-danger"></span>
+                                </div>
+                                
+                                <div class="d-flex justify-content-between">
+                                    <a href="@Url.Action("Details", "Jobs", new { id = job?.Id })" class="btn btn-outline-secondary">
+                                        <i class="fas fa-arrow-left me-2"></i>Back to Job Details
+                                    </a>
+                                    <button type="button" class="btn btn-primary btn-lg" id="submitApplicationBtn" data-bs-toggle="modal" data-bs-target="#confirmApplicationModal">
+                                        <i class="fas fa-paper-plane me-2"></i>Submit Application
+                                    </button>
+                                </div>
+                            </form>
+                        }
+                        else
+                        {
+                            <!-- Disabled form for already applied users -->
+                            <div class="card bg-light">
+                                <div class="card-body text-center py-5">
+                                    <i class="fas fa-check-circle fa-4x text-success mb-3"></i>
+                                    <h5 class="text-success mb-3">Application Already Submitted</h5>
+                                    <p class="text-muted mb-4">You have already applied for this position. You can track your application status in your applications page.</p>
+                                    <div class="d-flex justify-content-center gap-3">
+                                        <a href="@Url.Action("Details", "Jobs", new { id = job?.Id })" class="btn btn-outline-secondary">
+                                            <i class="fas fa-arrow-left me-2"></i>Back to Job Details
+                                        </a>
+                                        <a href="@Url.Action("MyApplications", "Jobs")" class="btn btn-primary">
+                                            <i class="fas fa-eye me-2"></i>View My Applications
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Custom Confirmation Modal -->
+<div class="modal fade" id="confirmApplicationModal" tabindex="-1" aria-labelledby="confirmApplicationModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="confirmApplicationModalLabel">
+                    <i class="fas fa-paper-plane me-2"></i>Confirm Application Submission
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="text-center mb-4">
+                    <i class="fas fa-question-circle fa-3x text-primary mb-3"></i>
+                    <h6 class="fw-bold">Are you sure you want to submit your application?</h6>
+                </div>
+                
+                <div class="card bg-light mb-3">
+                    <div class="card-body">
+                        <h6 class="card-title text-primary mb-2">
+                            <i class="fas fa-briefcase me-2"></i>@(job?.Title ?? "Job Position")
+                        </h6>
+                        <p class="card-text mb-1">
+                            <i class="fas fa-building me-2 text-muted"></i>@(job?.Company ?? "Company Name")
+                        </p>
+                        <p class="card-text mb-0">
+                            <i class="fas fa-map-marker-alt me-2 text-muted"></i>@(job?.Location ?? "Location")
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>
+                    <strong>What happens next?</strong>
+                    <ul class="mb-0 mt-2 small">
+                        <li>You will receive a confirmation email</li>
+                        <li>You can track your application status in "My Applications"</li>
+                        <li>The employer will be notified of your application</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-2"></i>Cancel
+                </button>
+                <button type="button" class="btn btn-primary" id="confirmSubmitBtn">
+                    <i class="fas fa-paper-plane me-2"></i>Yes, Submit Application
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('applicationForm');
+            const submitBtn = document.getElementById('submitApplicationBtn');
+            const confirmBtn = document.getElementById('confirmSubmitBtn');
+            const modal = document.getElementById('confirmApplicationModal');
+            let isSubmitting = false; // Flag to prevent multiple submissions
+            
+            // Handle form submission from modal
+            if (confirmBtn && form) {
+                confirmBtn.addEventListener('click', function() {
+                    // Prevent multiple submissions
+                    if (isSubmitting) {
+                        return;
+                    }
+                    
+                    isSubmitting = true;
+                    
+                    // Disable both buttons to prevent multiple clicks
+                    confirmBtn.disabled = true;
+                    submitBtn.disabled = true;
+                    
+                    // Show loading state
+                    confirmBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Submitting...';
+                    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Submitting...';
+                    
+                    // Close modal
+                    const modalInstance = bootstrap.Modal.getInstance(modal);
+                    modalInstance.hide();
+                    
+                    // Show visual feedback that form is being processed
+                    showSubmissionFeedback();
+                    
+                    // Add a small delay to show the loading state
+                    setTimeout(function() {
+                        // Submit form
+                        form.submit();
+                    }, 500);
+                });
+            }
+            
+            // Function to show submission feedback
+            function showSubmissionFeedback() {
+                // Add a temporary success message
+                const feedbackDiv = document.createElement('div');
+                feedbackDiv.className = 'alert alert-success alert-dismissible fade show position-fixed';
+                feedbackDiv.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+                feedbackDiv.innerHTML = `
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-spinner fa-spin fa-2x me-3 text-success"></i>
+                        <div>
+                            <h6 class="mb-1">Submitting Application...</h6>
+                            <p class="mb-0 small">Please wait while we process your application</p>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(feedbackDiv);
+                
+                // Remove feedback after 3 seconds
+                setTimeout(() => {
+                    if (feedbackDiv.parentNode) {
+                        feedbackDiv.parentNode.removeChild(feedbackDiv);
+                    }
+                }, 3000);
+            }
+            
+            // Function to clear all form fields
+            function clearFormFields() {
+                const coverLetter = document.getElementById('coverLetter');
+                const notes = document.getElementById('notes');
+                const resumeFile = document.getElementById('resumeFile');
+                
+                if (coverLetter) {
+                    coverLetter.value = '';
+                    coverLetter.style.backgroundColor = '#f8f9fa';
+                    setTimeout(() => coverLetter.style.backgroundColor = '', 1000);
+                }
+                if (notes) {
+                    notes.value = '';
+                    notes.style.backgroundColor = '#f8f9fa';
+                    setTimeout(() => notes.style.backgroundColor = '', 1000);
+                }
+                if (resumeFile) {
+                    resumeFile.value = '';
+                    resumeFile.style.backgroundColor = '#f8f9fa';
+                    setTimeout(() => resumeFile.style.backgroundColor = '', 1000);
+                }
+            }
+            
+            // Backup mechanism to re-enable buttons if there's an error
+            setTimeout(function() {
+                if (isSubmitting) {
+                    // If still submitting after 10 seconds, something went wrong
+                    isSubmitting = false;
+                    if (confirmBtn) {
+                        confirmBtn.disabled = false;
+                        confirmBtn.innerHTML = '<i class="fas fa-paper-plane me-2"></i>Yes, Submit Application';
+                    }
+                    if (submitBtn) {
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = '<i class="fas fa-paper-plane me-2"></i>Submit Application';
+                    }
+                }
+            }, 10000);
+            
+            // Prevent form submission if already submitting
+            if (form) {
+                form.addEventListener('submit', function(e) {
+                    if (isSubmitting) {
+                        e.preventDefault();
+                        return false;
+                    }
+                });
+            }
+            
+            // Note: Form fields are cleared after successful submission by the server redirect
+        });
+    </script>
+}

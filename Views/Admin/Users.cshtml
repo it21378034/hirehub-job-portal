@@ -1,0 +1,114 @@
+@model IEnumerable<ApplicationUser>
+
+@{
+    ViewData["Title"] = "Manage Users";
+}
+
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h1 class="display-5 mb-4">Manage Users</h1>
+            </div>
+        </div>
+        
+        @if (Model.Any())
+        {
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Role</th>
+                                    <th>Status</th>
+                                    <th>Created</th>
+                                    <th>Last Login</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var user in Model)
+                                {
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="avatar-sm bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3">
+                                                    @user.FirstName[0]@user.LastName[0]
+                                                </div>
+                                                <div>
+                                                    <h6 class="mb-0">@user.FirstName @user.LastName</h6>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>@user.Email</td>
+                                        <td>
+                                            @if (user.Email == "admin@jobportal.com")
+                                            {
+                                                <span class="badge bg-danger">Admin</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-info">User</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            @if (user.IsActive)
+                                            {
+                                                <span class="badge bg-success">Active</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-secondary">Inactive</span>
+                                            }
+                                        </td>
+                                        <td>@user.CreatedAt.ToString("MMM dd, yyyy")</td>
+                                        <td>
+                                            @if (user.LastLoginAt.HasValue)
+                                            {
+                                                @user.LastLoginAt.Value.ToString("MMM dd, yyyy")
+                                            }
+                                            else
+                                            {
+                                                <span class="text-muted">Never</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            @if (user.Email != "admin@jobportal.com")
+                                            {
+                                                <form asp-action="ToggleUserStatus" method="post" class="d-inline">
+                                                    <input type="hidden" name="userId" value="@user.Id" />
+                                                    <button type="submit" class="btn btn-sm @(user.IsActive ? "btn-outline-danger" : "btn-outline-success")">
+                                                        @(user.IsActive ? "Deactivate" : "Activate")
+                                                    </button>
+                                                </form>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="text-center py-5">
+                <i class="fas fa-users text-muted" style="font-size: 4rem;"></i>
+                <h4 class="text-muted mt-3">No users found</h4>
+            </div>
+        }
+    </div>
+</section>
+
+<style>
+    .avatar-sm {
+        width: 40px;
+        height: 40px;
+        font-size: 14px;
+        font-weight: bold;
+    }
+</style>

@@ -1,0 +1,279 @@
+@{
+    ViewData["Title"] = "Email Settings & Testing";
+}
+
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h1 class="display-5 mb-4">Email Settings & Testing</h1>
+                <p class="text-muted">Configure email settings and test email functionality</p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-8">
+                <!-- Current Email Configuration -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Current Email Configuration</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">SMTP Server</label>
+                                    <p class="mb-0">@ViewBag.SmtpServer</p>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">SMTP Port</label>
+                                    <p class="mb-0">@ViewBag.SmtpPort</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">From Email</label>
+                                    <p class="mb-0">@ViewBag.FromEmail</p>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">From Name</label>
+                                    <p class="mb-0">@ViewBag.FromName</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-1"></i>
+                            <strong>Configuration Location:</strong> Email settings are configured in appsettings.json. 
+                            To modify settings, update the EmailSettings section in the configuration file.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Email Test Section -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Test Email Functionality</h5>
+                    </div>
+                    <div class="card-body">
+                        <form asp-action="TestEmail" method="post">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Test Email Address</label>
+                                        <input type="email" name="testEmail" class="form-control" required 
+                                               placeholder="Enter email address to test" />
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Email Type</label>
+                                        <select name="emailType" class="form-select" required>
+                                            <option value="">Select Email Type</option>
+                                            <option value="confirmation">Application Confirmation</option>
+                                            <option value="rejection">Application Rejection</option>
+                                            <option value="shortlist">Application Shortlist</option>
+                                            <option value="notification">New Application Notification</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-paper-plane me-1"></i>Send Test Email
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Email Templates Preview -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Email Templates Preview</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card border">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-check-circle fa-3x text-success mb-3"></i>
+                                        <h6>Application Confirmation</h6>
+                                        <p class="text-muted small">Sent to job seekers when they apply for a job</p>
+                                        <button class="btn btn-sm btn-outline-success" onclick="previewEmail('confirmation')">
+                                            Preview
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card border">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-times-circle fa-3x text-danger mb-3"></i>
+                                        <h6>Application Rejection</h6>
+                                        <p class="text-muted small">Sent to job seekers when application is rejected</p>
+                                        <button class="btn btn-sm btn-outline-danger" onclick="previewEmail('rejection')">
+                                            Preview
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-md-6">
+                                <div class="card border">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-star fa-3x text-warning mb-3"></i>
+                                        <h6>Application Shortlist</h6>
+                                        <p class="text-muted small">Sent to job seekers when application is shortlisted</p>
+                                        <button class="btn btn-sm btn-outline-warning" onclick="previewEmail('shortlist')">
+                                            Preview
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card border">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-bell fa-3x text-info mb-3"></i>
+                                        <h6>New Application Notification</h6>
+                                        <p class="text-muted small">Sent to employers when someone applies</p>
+                                        <button class="btn btn-sm btn-outline-info" onclick="previewEmail('notification')">
+                                            Preview
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <!-- Email Statistics -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Email Statistics</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between">
+                                <span>Total Applications</span>
+                                <strong>@ViewBag.TotalApplications</strong>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between">
+                                <span>Emails Sent Today</span>
+                                <strong>@ViewBag.EmailsToday</strong>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between">
+                                <span>Success Rate</span>
+                                <strong class="text-success">@ViewBag.SuccessRate%</strong>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between">
+                                <span>Last Test</span>
+                                <strong>@ViewBag.LastTest</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Quick Actions</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-grid gap-2">
+                            <a href="@Url.Action("EmailNotifications")" class="btn btn-outline-primary">
+                                <i class="fas fa-envelope me-1"></i>View All Notifications
+                            </a>
+                            <button class="btn btn-outline-info" onclick="testAllEmails()">
+                                <i class="fas fa-vial me-1"></i>Test All Email Types
+                            </button>
+                            <button class="btn btn-outline-warning" onclick="checkEmailStatus()">
+                                <i class="fas fa-heartbeat me-1"></i>Check Email Status
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Email Configuration Help -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">Configuration Help</h5>
+                    </div>
+                    <div class="card-body">
+                        <h6>Gmail Setup:</h6>
+                        <ol class="small">
+                            <li>Enable 2-Factor Authentication</li>
+                            <li>Generate App Password</li>
+                            <li>Use app password in configuration</li>
+                        </ol>
+                        
+                        <h6>Other Providers:</h6>
+                        <ul class="small">
+                            <li>Outlook: smtp-mail.outlook.com:587</li>
+                            <li>Yahoo: smtp.mail.yahoo.com:587</li>
+                        </ul>
+                        
+                        <div class="alert alert-warning small">
+                            <i class="fas fa-exclamation-triangle me-1"></i>
+                            Never commit real credentials to version control!
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Email Preview Modal -->
+<div class="modal fade" id="emailPreviewModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Email Template Preview</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div id="emailPreviewContent">
+                    <!-- Email preview will be loaded here -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function previewEmail(type) {
+    // This would typically load the actual email template
+    // For now, we'll show a placeholder
+    const previewContent = document.getElementById('emailPreviewContent');
+    previewContent.innerHTML = `
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle me-1"></i>
+            Email template preview for <strong>${type}</strong> would be displayed here.
+            <br><br>
+            In a real implementation, this would show the actual HTML email template
+            with sample data to preview how the email will look to recipients.
+        </div>
+    `;
+    
+    const modal = new bootstrap.Modal(document.getElementById('emailPreviewModal'));
+    modal.show();
+}
+
+function testAllEmails() {
+    alert('Test all emails functionality would be implemented here. This would send test emails for all email types to a specified address.');
+}
+
+function checkEmailStatus() {
+    alert('Email status check functionality would be implemented here. This would verify SMTP connection and configuration.');
+}
+</script>
