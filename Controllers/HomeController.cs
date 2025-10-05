@@ -18,7 +18,7 @@ namespace HireHub.Controllers
         {
             // Get recent job postings for the homepage
             var recentJobs = await _context.JobPostings
-                .Where(j => j.Status == "Active")
+                .Where(j => j.Status == "Approved" && j.IsActive)
                 .OrderByDescending(j => j.PostedDate)
                 .Take(6)
                 .ToListAsync();

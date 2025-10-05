@@ -95,7 +95,11 @@ namespace HireHub.Data
                             Benefits = "Health insurance, 401k, Flexible working hours",
                             EmployerId = employer.Id,
                             PostedDate = DateTime.UtcNow.AddDays(-5),
-                            ApplicationDeadline = DateTime.UtcNow.AddDays(30)
+                            ApplicationDeadline = DateTime.UtcNow.AddDays(30),
+                            Status = "Approved",
+                            IsActive = true,
+                            ApprovedAt = DateTime.UtcNow.AddDays(-4),
+                            ApprovedBy = "admin@hirehub.com"
                         },
                         new JobPosting
                         {
@@ -112,7 +116,11 @@ namespace HireHub.Data
                             Benefits = "Remote work, Health insurance, Professional development",
                             EmployerId = employer.Id,
                             PostedDate = DateTime.UtcNow.AddDays(-3),
-                            ApplicationDeadline = DateTime.UtcNow.AddDays(25)
+                            ApplicationDeadline = DateTime.UtcNow.AddDays(25),
+                            Status = "Approved",
+                            IsActive = true,
+                            ApprovedAt = DateTime.UtcNow.AddDays(-2),
+                            ApprovedBy = "admin@hirehub.com"
                         },
                         new JobPosting
                         {
@@ -129,7 +137,11 @@ namespace HireHub.Data
                             Benefits = "Health insurance, Dental, Vision, 401k",
                             EmployerId = employer.Id,
                             PostedDate = DateTime.UtcNow.AddDays(-1),
-                            ApplicationDeadline = DateTime.UtcNow.AddDays(20)
+                            ApplicationDeadline = DateTime.UtcNow.AddDays(20),
+                            Status = "Approved",
+                            IsActive = true,
+                            ApprovedAt = DateTime.UtcNow.AddDays(-1),
+                            ApprovedBy = "admin@hirehub.com"
                         }
                     };
 

@@ -44,7 +44,16 @@ namespace HireHub.Controllers
                     await _userManager.AddToRoleAsync(user, role);
 
                     await _signInManager.SignInAsync(user, isPersistent: false);
-                    return RedirectToAction("Index", "Home");
+                    
+                    // Redirect based on user role
+                    if (role == "Employer")
+                    {
+                        return RedirectToAction("Index", "Employer");
+                    }
+                    else
+                    {
+                        return RedirectToAction("Index", "Home");
+                    }
                 }
 
                 foreach (var error in result.Errors)
@@ -76,9 +85,21 @@ namespace HireHub.Controllers
                     {
                         user.LastLoginAt = DateTime.UtcNow;
                         await _userManager.UpdateAsync(user);
-                    }
 
-                    return RedirectToAction("Index", "Home");
+                        // Redirect based on user role
+                        if (await _userManager.IsInRoleAsync(user, "Admin"))
+                        {
+                            return RedirectToAction("Dashboard", "Admin");
+                        }
+                        else if (await _userManager.IsInRoleAsync(user, "Employer"))
+                        {
+                            return RedirectToAction("Index", "Employer");
+                        }
+                        else
+                        {
+                            return RedirectToAction("Index", "Home");
+                        }
+                    }
                 }
 
                 ModelState.AddModelError(string.Empty, "Invalid login attempt.");

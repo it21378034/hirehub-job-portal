@@ -17,21 +17,8 @@ try
     builder.Services.AddDbContext<ApplicationDbContext>(options =>
     {
         var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-        if (builder.Environment.IsProduction())
-        {
-            // Always use SQL Server in production
-            options.UseSqlServer(connectionString);
-        }
-        else if (connectionString!.Contains("Data Source="))
-        {
-            // SQLite connection for development
-            options.UseSqlite(connectionString);
-        }
-        else
-        {
-            // SQL Server connection
-            options.UseSqlServer(connectionString);
-        }
+        // Force SQLite usage for this deployment
+        options.UseSqlite(connectionString);
     });
 
     builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
